@@ -7,7 +7,7 @@ const CardBoard = (props) => {
       <GridGenerator cols={4}>
         {props.cards&&
           props.cards.map((item) => {
-              return <Card key={item.title} src={item.src} title={item.title}></Card>
+              return <Card key={item.primaryImage} src={item.primaryImage} title={item.title} />
           })
         }
       </GridGenerator>

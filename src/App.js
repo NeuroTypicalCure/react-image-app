@@ -3,6 +3,7 @@ import './App.css';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import CardBoard from './components/CardBoard';
+import Canvas3D from './components/Canvas3D';
 
 function App() {
   // use state hooks
@@ -14,12 +15,9 @@ function App() {
   useEffect(() => {
     console.log("rerender");
     function getPieces() {
-        axios.get('https://collectionapi.metmuseum.org/public/collection/v1/search?isHighlight=true&q='+query).then(ids=>{
-          for(let id of ids.data.objectIDs){
-            axios.get('https://collectionapi.metmuseum.org/public/collection/v1/objects/'+id).then(piece => {
-              setCards(c => c.concat({src: piece.data.primaryImage, title: piece.data.title}));
-            });
-          }
+        axios.get(`http://localhost:5000/getMetMuseumSearch/${query}`).then(items=>{
+          console.log("items data: "+items.data);
+          setCards(items.data);
         });
     }getPieces();
     return function cleanup() {
@@ -31,12 +29,13 @@ function App() {
   const onClick = () => setQuery(value);
 
   // app render
+  // <CardBoard className="container" cards={cards} />
   return (
     <div className="App">
       <header className="App-header">
         <input value={value} onChange={e => setValue(e.target.value)}/>
         <button onClick={onClick}>Search</button>
-        <CardBoard className="container" cards={cards} />
+        <Canvas3D items={cards}/>
       </header>
     </div>
   );
