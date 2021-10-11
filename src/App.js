@@ -1,9 +1,9 @@
-import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
-import axios from 'axios';
-import CardBoard from './components/CardBoard';
-import Canvas3D from './components/Canvas3D';
+import Home from './views/Home';
+import About from './views/About';
+import Users from './views/Users';
+import Gallery from './views/Gallery';
 import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 
 function App() {
@@ -29,7 +29,6 @@ function App() {
         {/* MENU */}
         <div className={isShowDropdownMenu} aria-labelledby="navbarDropdown">
           <Link className="dropdown-item" to="/gallery">Gallery</Link>
-          <Link className="dropdown-item" to="/gallery3d">3D Gallery</Link>
         </div>
 
       </li>
@@ -69,10 +68,7 @@ function App() {
             <Users />
           </Route>
           <Route path="/gallery">
-            <Home />
-          </Route>
-          <Route path="/gallery3d">
-            <Gallery3D />
+            <Gallery variant="canvas3d" />
           </Route>
           <Route path="/">
             <Home />
@@ -80,72 +76,6 @@ function App() {
         </Switch>
       </div>
     </Router>
-  );
-}
-
-function RouteTemplate(props){
-  return (<div className="route-body" style={{margin:'0.4em 0.2em 0.4em 0.2em',padding:'1em',backgroundColor:'#1D1D1F'}}>
-    {props.children}
-  </div>);
-}
-
-function Home() {
-  return (
-    <RouteTemplate>
-      <h2>Home</h2>
-    </RouteTemplate>
-  );
-}
-
-
-
-function Gallery3D(props) {
-  // use state hooks
-  const [query, setQuery] = useState('boat');
-  const [value, setValue] = useState('boat');
-  const [cards, setCards] = useState([]);
-  
-  // use effect hook: when [dependencies] change -> (re-render)
-  useEffect(() => {
-    console.log("rerender");
-    function getPieces() {
-        axios.get(`http://localhost:5000/getMetMuseumSearch/${query}`).then(items=>{
-          console.log("items data: "+items.data);
-          setCards(items.data);
-        }).catch(e=>console.log(e));
-    }getPieces();
-    return function cleanup() {
-      setCards([]);
-    }
-  }, [query]);
-
-  // event listeners
-  const onClick = () => setQuery(value);
-
-  return (
-    <RouteTemplate>
-      <header className="app-header">
-        <input value={value} onChange={e => setValue(e.target.value)}/>
-        <button onClick={onClick}>Search</button>
-        <Canvas3D items={cards}/>
-      </header>
-    </RouteTemplate>
-  );
-}
-
-function About() {
-  return (
-    <RouteTemplate>
-      <h2>About</h2>
-    </RouteTemplate>
-  );
-}
-
-function Users() {
-  return (
-    <RouteTemplate>
-      <h2>Users</h2>
-    </RouteTemplate>
   );
 }
 
